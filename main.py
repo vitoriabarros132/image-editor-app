@@ -2,7 +2,7 @@ import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QListWidgetItem
 from PySide6.QtGui import QPixmap
 from ui_main_window import Ui_MainWindow
-from PIL import Image, ImageFilter
+from PIL import Image, ImageFilter, ImageEnhance
 
 
 class ImageEditor(QMainWindow):
@@ -19,12 +19,14 @@ class ImageEditor(QMainWindow):
 
         'Conexão dos botões às funções'
         self.ui.selectImagesButton.clicked.connect(self.select_images)
-        self.ui.applyFilterButton.clicked.connect(self.apply_filter)
+        self.ui.applyContourButton.clicked.connect(self.apply_contour)
+        self.ui.applyContrastButton.clicked.connect(self.apply_contrast)
+        self.ui.applyNoiseButton.clicked.connect(self.apply_noise)
         self.ui.saveButton.clicked.connect(self.save_images)
         self.ui.imageList.itemClicked.connect(self.preview_image)
 
         'Ajuste de tamanho'
-        self.ui.imagePreview.setFixedSize(600,600)
+        self.ui.imagePreview.setFixedSize(500, 500)
 
     def select_images(self):
         'Abre uma janela para selecionar imagem e exibe na lista'
@@ -38,19 +40,42 @@ class ImageEditor(QMainWindow):
                 item = QListWidgetItem(file)
                 self.ui.imageList.addItem(item)
 
-    def apply_filter(self):
-        'Aplica um filtro às imagens selecionadas'
+        'Atualiza a pré visualização da primeira imagem'
+        if self.selected_images:
+            pixmap = QPixmap(self.selected_images[0])
+            self.ui.imagePreview.setPixmap(pixmap)
+
+    def apply_contour(self):
+        'Aplica o filtro de CONTORNO às imagens selecionadas'
         for image_path in self.selected_images:
             'Carrega a imagem com Pillow'
             image = Image.open(image_path)
             'Aplica o filtro'
             filtered_image = image.filter(ImageFilter.CONTOUR)
             self.filtered_images[image_path] = filtered_image
+            self.preview_filtered_image()
 
-            'Atualiza a pré visualizção da primeira imagem'
-            if self.selected_images:
-                pixmap = QPixmap(self.selected_images[0])
-                self.ui.imagePreview.setPixmap(pixmap)
+    def apply_contrast(self):
+        'Aplica o filtro de CONTRASTE às imagens selecionadas'
+        for image_path in self.selected_images:
+            'Carrega a imagem com Pillow'
+            image = Image.open(image_path)
+            'Objeto para ajustar o contraste'
+            enhancer = ImageEnhance.Contrast(image)
+            '''1.0 → mantém o contraste original. 
+            maior que 1.0 → aumenta o contraste. 
+            menor que 1.0 → reduz o contraste.'''
+            contrast_image = enhancer.enhance(1.5)
+            self.filtered_images[image_path] = contrast_image
+            self.preview_filtered_image()
+
+    def apply_noise(self):
+        'Aplica o filtro de REDUÇÃO DE RUIDO às imagens selecionadas'
+        for image_path in self.selected_images:
+            image = Image.open(image_path)
+            noise_reduced_image = image.filter(ImageFilter.SMOOTH)
+            self.filtered_images[image_path] = noise_reduced_image
+            self.preview_filtered_image()
 
     def save_images(self):
         'Salva as imagens com filtro numa pasta escolhida'
@@ -76,6 +101,22 @@ class ImageEditor(QMainWindow):
         self.ui.imagePreview.setPixmap(pixmap)
         'Ajusta o tamanho ao QLabel'
         self.ui.imagePreview.setScaledContents(True)
+
+    def preview_filtered_image(self):
+        'Se não houver nenhuma imagem filtrada, ele não dá retorno.'
+        if not self.filtered_images:
+            return
+
+        'Pega o caminho e a imagem filtrada mais recente'
+        last_image_path, last_filtered_image = list(self.filtered_images.items())[-1]
+
+        'Salva a imagem filtrada em um arquivo temporário para exibição'
+        temp_path = "temp_preview.png"
+        last_filtered_image.save(temp_path)
+
+        'Cria um QPixmap da imagem salva e ajusta para o tamanho da pré-visualização'
+        pixmap = QPixmap(temp_path).scaled(600, 600)
+        self.ui.imagePreview.setPixmap(pixmap)
 
 
 if __name__ == "__main__":
