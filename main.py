@@ -54,7 +54,8 @@ class ImageEditor(QMainWindow):
         equalizacao_index = self.ui.equalizationBox.currentIndex()
 
         self.filtered_images = {}
-
+        self.equalized_images = {}
+        
         for image_path in self.selected_images:
             img = io.imread(image_path, as_gray=True)
 
@@ -78,8 +79,8 @@ class ImageEditor(QMainWindow):
                 equalized = filtered  # Sem equalização
 
             # Convertendo para formato correto antes de salvar
-            final_image = (equalized * 255).astype(np.uint8)
-            self.filtered_images[image_path] = final_image
+            self.filtered_images[image_path] = (filtered * 255).astype(np.uint8)
+            self.equalized_images[image_path] = (equalized * 255).astype(np.uint8)
 
         # Chama a função de exibição
         self.preview_processed_images()
@@ -105,11 +106,10 @@ class ImageEditor(QMainWindow):
 
         # Obtém a primeira imagem processada
         first_image_path = self.selected_images[0]
-        filtered_image = self.filtered_images.get(first_image_path)
-
+        
+        filtered_image = self.filtered_images.get(first_image_path)        
         if filtered_image is None:
             return
-
         # Criando QImage para QLabel - FILTRADA
         height, width = filtered_image.shape
         bytes_per_line = width
@@ -118,21 +118,22 @@ class ImageEditor(QMainWindow):
         # Criar um QPixmap e redimensionar para exibição - FILTRADA
         pixmap_filtered = QPixmap.fromImage(q_image_filtered).scaled(250, 250, Qt.AspectRatioMode.KeepAspectRatio,
                                                                      Qt.TransformationMode.SmoothTransformation)
-
         # Atualizar QLabel de imgFiltrada
         self.ui.imgFiltrada.setPixmap(pixmap_filtered)
         self.ui.imgFiltrada.setScaledContents(True)
 
-        # Criando a QImage para QLabel - EQUALIZADA
-        equalized_image = exposure.equalize_hist(filtered_image)  # Aplica equalização na imagem filtrada
-        final_image = (equalized_image * 255).astype(np.uint8)
-
-        q_image_equalized = QImage(final_image.data, width, height, bytes_per_line, QImage.Format.Format_Grayscale8)
+        
+        equalized_image = self.equalized_images.get(first_image_path)
+        if equalized_image is None:
+            return
+        # Criando QImage para QLabel - EQUALIZADA
+        height, width = equalized_image.shape
+        bytes_per_line = width
+        q_image_equalized = QImage(equalized_image.data, width, height, bytes_per_line, QImage.Format.Format_Grayscale8)
 
         # Criar um QPixmap e redimensionar para exibição - EQUALIZADA
         pixmap_equalized = QPixmap.fromImage(q_image_equalized).scaled(250, 250, Qt.AspectRatioMode.KeepAspectRatio,
                                                                        Qt.TransformationMode.SmoothTransformation)
-
         # Atualizar QLabel de imgEqualizada
         self.ui.imgEqualizada.setPixmap(pixmap_equalized)
         self.ui.imgEqualizada.setScaledContents(True)
