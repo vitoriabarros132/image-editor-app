@@ -3,4 +3,5 @@ Sistema principal:
 
 Sistemas secundários:
 1) Redução de ruído utilizando a Transformada Wavelet, Wiener e Mediana;
-2) Ajuste de contraste usando equalização de  histograma e CLAHE.
+2) Ajuste de contraste usando equalização de  histograma e CLAHE;
+3) Aplicação de filtros de contorno.
