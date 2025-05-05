@@ -122,56 +122,6 @@ os.listdir()
 
 model.save('/content/drive/MyDrive/fissuras227x227.keras')
 
-"""OBSERVAÇÕES -----
-
-Pontos Positivos:
-
-*   Organização: O código está bem organizado, com seções separadas para carregar o dataset, criar o modelo, treinar e avaliar.
-*   Uso de Keras: Você está usando a biblioteca Keras, que é uma ótima escolha para construir e treinar modelos de deep learning de forma fácil e eficiente.
-*   Arquitetura do Modelo: A arquitetura da CNN parece adequada para a tarefa de classificação de imagens, com camadas convolucionais, pooling, dropout e camadas densas.
-*   Uso de Data Augmentation: Você está usando data augmentation para aumentar a quantidade de dados de treinamento e melhorar a generalização do modelo.
-*   Avaliação do Modelo: Você está avaliando o modelo usando o dataset de teste e calculando a acurácia, que é uma métrica importante para tarefas de classificação.
-
-Sugestões de Melhoria:
-
-*   Ajuste de Hiperparâmetros: Você pode experimentar ajustar os hiperparâmetros do modelo, como a taxa de aprendizado, o número de épocas de treinamento e o tamanho do batch, para tentar melhorar o desempenho.
-*   Regularização: Você pode adicionar técnicas de regularização, como L1 ou L2, para evitar overfitting e melhorar a generalização do modelo.
-*   Visualização: Você pode visualizar as curvas de aprendizado (loss e acurácia) durante o treinamento para monitorar o progresso e identificar problemas como overfitting ou underfitting.
-*   Transfer Learning: Você pode considerar usar transfer learning, que consiste em usar um modelo pré-treinado em um conjunto de dados grande e adaptá-lo para sua tarefa específica. Isso pode acelerar o treinamento e melhorar o desempenho.
-
-
-Código com Sugestões:
-
-```
-# ... (código original) ...
-
-# Ajuste de Hiperparâmetros
-optimizer = keras.optimizers.Adam(learning_rate=0.001)  # Ajuste da taxa de aprendizado
-model.compile(loss="binary_crossentropy", optimizer=optimizer, metrics=["accuracy"])
-
-# Regularização
-layers.Conv2D(32, (3, 3), activation='relu', input_shape=(227, 227, 3), kernel_regularizer=keras.regularizers.l2(0.01))  # Regularização L2
-
-# Visualização
-history = model.fit(train_dataset, validation_data=validation_dataset, epochs=10)
-plt.plot(history.history['accuracy'], label='accuracy')
-plt.plot(history.history['val_accuracy'], label='val_accuracy')
-plt.xlabel('Epoch')
-plt.ylabel('Accuracy')
-plt.legend(loc='lower right')
-plt.show()
-
-# Transfer Learning (exemplo com ResNet50)
-base_model = keras.applications.ResNet50(weights='imagenet', include_top=False, input_shape=(227, 227, 3))
-x = base_model.output
-x = layers.GlobalAveragePooling2D()(x)
-x = layers.Dense(1024, activation='relu')(x)
-predictions = layers.Dense(1, activation='sigmoid')(x)
-model = keras.Model(inputs=base_model.input, outputs=predictions)
-model.compile(loss="binary_crossentropy", optimizer=optimizer, metrics=["accuracy"])
-
-# ... (restante do código) ...
-```
 
 
 """
