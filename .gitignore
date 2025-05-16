@@ -1,11 +1,12 @@
-# Ignore temporários e builds
-/build/
-/dist/
-*.spec
-*.pyc
-/__pycache__/
+# IDEs
+.idea/
 
-# Backups e lixo
-*.bak
-*.log
+# Python
+__pycache__/
+*.pyc
+
+# Build
+build/
+dist/
+*.spec
 
