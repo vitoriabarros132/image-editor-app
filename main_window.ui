@@ -614,7 +614,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <item>
      <property name="text">
@@ -629,6 +629,11 @@
     <item>
      <property name="text">
       <string>Filtro de Mediana</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Difusão Anisotrópica</string>
      </property>
     </item>
    </widget>

@@ -4,6 +4,7 @@ import numpy as np
 from PySide6.QtGui import QPixmap, QImage, Qt
 from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog
 from ui_main_window import Ui_mainWindow
+import cv2.ximgproc as xip
 from skimage import io, restoration, filters, exposure
 from PySide6.QtGui import QStandardItemModel, QStandardItem
 
@@ -55,7 +56,7 @@ class ImageEditor(QMainWindow):
 
         self.filtered_images = {}
         self.equalized_images = {}
-        
+
         for image_path in self.selected_images:
             img = io.imread(image_path, as_gray=True)
 
@@ -66,6 +67,15 @@ class ImageEditor(QMainWindow):
                 filtered = restoration.wiener(img, np.ones((5, 5)) / 25, balance=0.1)
             elif filtro_index == 2:
                 filtered = filters.median(img)
+            elif filtro_index == 3:
+                # Esse filtro exige imagem BGR uint8, então converte a imagem grayscale para BGR
+                img_bgr = cv.cvtColor((img * 255).astype(np.uint8), cv.COLOR_GRAY2BGR)
+                # Aplica difusão anisotrópica diretamente em BGR uint8
+                filtered_bgr = xip.anisotropicDiffusion(img_bgr, alpha=0.05, K=70, niters=5)
+                # Converte o resultado BGR de volta para escala de cinza
+                filtered = cv.cvtColor(filtered_bgr, cv.COLOR_BGR2GRAY)
+                # Converte para float32 em escala [0, 1] para manter compatibilidade com equalização
+                filtered = filtered.astype(np.float32) / 255.0
             else:
                 filtered = img  # Sem filtro
 
@@ -146,7 +156,7 @@ class ImageEditor(QMainWindow):
 
         save_dir = QFileDialog.getExistingDirectory(self, "Selecione o local para salvar as imagens")
         if save_dir:
-            for image_path, processed_image in self.filtered_images.items():
+            for image_path, processed_image in self.equalized_images.items():
                 output_path = f"{save_dir}/{image_path.split('/')[-1]}"
                 cv.imwrite(output_path, processed_image)
 
