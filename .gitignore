@@ -1,1 +1,11 @@
+# Ignore temporários e builds
 /build/
+/dist/
+*.spec
+*.pyc
+/__pycache__/
+
+# Backups e lixo
+*.bak
+*.log
+
