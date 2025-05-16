@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_windowEMCzuS.ui'
+## Form generated from reading UI file 'main_windowCwXdoR.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.9.0
 ##
@@ -203,7 +203,7 @@ class Ui_mainWindow(object):
     # setupUi
 
     def retranslateUi(self, mainWindow):
-        mainWindow.setWindowTitle(QCoreApplication.translate("mainWindow", u"Editor", None))
+        mainWindow.setWindowTitle(QCoreApplication.translate("mainWindow", u"Editor de imagens", None))
         self.selectButton.setText(QCoreApplication.translate("mainWindow", u"Selecionar imagens", None))
         self.label_2.setText(QCoreApplication.translate("mainWindow", u"Selecione o filtro para remo\u00e7\u00e3o de ru\u00eddo", None))
         self.equalizationBox.setItemText(0, QCoreApplication.translate("mainWindow", u"Equaliza\u00e7\u00e3o de Histograma", None))

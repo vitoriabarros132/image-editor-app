@@ -516,7 +516,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Editor</string>
+   <string>Editor de imagens</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="selectButton">

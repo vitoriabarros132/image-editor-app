@@ -7,17 +7,19 @@ from ui_main_window import Ui_mainWindow
 import cv2.ximgproc as xip
 from skimage import io, restoration, filters, exposure
 from PySide6.QtGui import QStandardItemModel, QStandardItem
-
+from PySide6.QtGui import QIcon
 
 class ImageEditor(QMainWindow):
     def __init__(self):
         super().__init__()
         self.ui = Ui_mainWindow()
         self.ui.setupUi(self)
+        self.setWindowIcon(QIcon("icone.ico"))
 
         """Lista para armazenamento das imagens selecionadas"""
         self.selected_images = []
         self.filtered_images = {}
+        self.equalized_images = {}
 
         """Conexão dos botões às funções"""
         self.ui.selectButton.clicked.connect(self.select_images)
