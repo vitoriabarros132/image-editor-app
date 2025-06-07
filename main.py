@@ -1,3 +1,4 @@
+import os
 import sys
 import cv2 as cv
 import numpy as np
@@ -9,12 +10,29 @@ from skimage import io, restoration, filters, exposure
 from PySide6.QtGui import QStandardItemModel, QStandardItem
 from PySide6.QtGui import QIcon
 
+if sys.platform == 'win32':
+    import ctypes
+    myappid = "editor.de.imagens.final"
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+
+def get_resource_path(relative_path):
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.dirname(os.path.abspath(__file__))
+
+    full_path = os.path.join(base_path, relative_path)
+
+    return full_path
+
 class ImageEditor(QMainWindow):
     def __init__(self):
         super().__init__()
         self.ui = Ui_mainWindow()
         self.ui.setupUi(self)
-        self.setWindowIcon(QIcon("icone.ico"))
+
+        icon_path = get_resource_path("icone.ico")
+        self.setWindowIcon(QIcon(icon_path))
 
         """Lista para armazenamento das imagens selecionadas"""
         self.selected_images = []
@@ -169,5 +187,5 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = ImageEditor()
     window.show()
-    sys.exit(app.exec())
+    sys.exit(app.exec_())
 
